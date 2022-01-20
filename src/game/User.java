@@ -7,6 +7,10 @@ import services.UserService;
 import validators.UserValidator;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -21,7 +25,18 @@ public class User {
     private static ErrorMessageLogger error = new ErrorMessageLogger();
     private static SuccessMessageLogger success = new SuccessMessageLogger();
 
-    public Boolean registerUser() throws IOException, SQLException {
+    private String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest msgDigest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = msgDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+        BigInteger no= new BigInteger(1,hash);
+        StringBuilder hexStr = new StringBuilder(no.toString(16));
+        while(hexStr.length() < 32){
+            hexStr.insert(0,'0');
+        }
+        return hexStr.toString();
+    }
+
+    public Boolean registerUser() throws IOException, SQLException, NoSuchAlgorithmException {
         UniqueRandomCharacters randomCharacters = new UniqueRandomCharacters();
         String[] fields= {"email","password"};
         System.out.println("### \t\tPLEASE FILL THE REQUIRED INFORMATION ###");
@@ -29,7 +44,8 @@ public class User {
             generateInput(field,"register");
         }
         String userId = randomCharacters.random();
-        userService.registerUser(userId,email,password);
+        String hashed_password = hashPassword(password);
+        userService.registerUser(userId,email,hashed_password);
         success.log("### REGISTERED SUCCESSFULLY ###");
         setUserId(userId);
         return true;
@@ -43,15 +59,18 @@ public class User {
         this.userId = userId;
     }
 
-    public Boolean login() throws IOException, SQLException {
+
+    public Boolean login() throws IOException, SQLException, NoSuchAlgorithmException {
         String[] fields = {"email","password"};
         System.out.println("### \t\t ENTER YOUR ACCOUNT");
         for(String field: fields){
             generateInput(field,"login");
         }
-        String checkCredentials = userService.checkCredentials(email,password);
+        String hashed_password = hashPassword(password);
+        String checkCredentials = userService.checkCredentials(email,hashed_password);
         if(!checkCredentials.isEmpty()){
             setUserId(checkCredentials);
+            success.log("### LOGGED IN SUCCESSFULLY ###");
             return true;
         }
         return false;
