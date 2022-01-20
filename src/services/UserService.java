@@ -9,11 +9,11 @@ public class UserService{
     Connection conn = dbConn.myConnection;
 
     public void registerUser(String userId,String email, String password) throws SQLException {
-        String sql = "INSERT INTO users(userId,email,password) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO users(userId,email,password) VALUES(?,?,?)";
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1,userId);
-        statement.setString(3,email);
-        statement.setString(4,password);
+        statement.setString(2,email);
+        statement.setString(3,password);
         statement.executeUpdate();
     }
 
@@ -31,7 +31,7 @@ public class UserService{
         return false;
     }
 
-    public String checkCredentials(String email,String password) throws SQLException {
+    public String checkCredentials(String email, String password) throws SQLException {
         String sql = "SELECT * FROM USERS WHERE email='"+email+"' and password='"+password+"'";
         Statement statement = conn.createStatement();
         ResultSet result = statement.executeQuery(sql);
