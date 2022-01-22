@@ -10,9 +10,10 @@ import java.util.Scanner;
 
 public class Main {
     private static Integer choice;
-    private static Boolean loggedIn = false;
+    private static Boolean loggedIn = true;
     private static String userId;
     private static ErrorMessageLogger error = new ErrorMessageLogger();
+    private static Game game = new Game();
 
     public static void main(String[] args) throws IOException, SQLException, NoSuchAlgorithmException {
         new DatabaseConnection();
@@ -63,6 +64,7 @@ public class Main {
 
                 switch(choice){
                     case 1:
+                        game.play();
                         break;
                     case 2:
                         break;
