@@ -132,13 +132,16 @@ public class Game {
             while(true){
                 playerTurn();
                 if(isGameFinished()){
+                    drawBoard();
+                    success.log("game finished");
                     break;
                 }
                 computerTurn();
+                drawBoard();
                 if(isGameFinished()){
+                    success.log("game finished");
                     break;
                 }
-                drawBoard();
             }
     }
 }
