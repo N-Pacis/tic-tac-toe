@@ -32,7 +32,7 @@ public class UserService{
     }
 
     public String checkCredentials(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM USERS WHERE email='"+email+"' and password='"+password+"'";
+        String sql = "SELECT * FROM users WHERE email='"+email+"' and password='"+password+"'";
         Statement statement = conn.createStatement();
         ResultSet result = statement.executeQuery(sql);
         int rowCount = 0;
